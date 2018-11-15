@@ -2,4 +2,4 @@
 点亮地图
 
 
-预览 https://stavinli.github.io/scatter_map/index.html
+预览 http://47.106.166.17:5400/
