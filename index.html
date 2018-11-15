@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body style="height: 100%; margin: 0">
+    <div id="container" style="height: 100%"></div>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+    <script type="text/javascript" src="http://s.yidaichu.com/s/libs/js/jquery.js?v=4f252523d4"></script>
+    <script type="text/javascript">
+        var dom = document.getElementById("container");
+        var myChart = echarts.init(dom);
+        var app = {};
+        option = null;
+
+        $.get('/json/allparkLL.json', function(data) {
+            var weiboDatas = []
+            for (var i = 0; i < data.data.length; i++) {
+                var weiboData1 = [];
+
+                if (i % 30 == 0) {
+                    for (var n = 0; n < i; n++) {
+                        for (var m = 0; m < 3; m++) {
+                            var strongThat = data.data[n]
+                            if (Math.random() > 0.5) {
+                                weiboData1.push([strongThat[0] * 1 + Math.random() * 0.009, strongThat[1] * 1 + Math.random() * 0.009])
+                            } else {
+                                weiboData1.push([strongThat[0] * 1 - Math.random() * 0.009, strongThat[1] * 1 - Math.random() * 0.009])
+                            }
+                            // console.log([strongThat[0] * 1 + Math.random() * 0.009, strongThat[1] * 1 + Math.random() * 0.009])
+                        }
+                        // if (i < 101) {
+                        //     // console.log(weiboData1)
+                        // }
+                    }
+                    weiboDatas.push([...weiboData1])
+                }
+            }
+            var z = 0;
+            var timer = setInterval(function() {
+                if (z == weiboDatas.length) {
+                    clearInterval(timer)
+                    console.log(z)
+                } else {
+                    myChart.setOption(option = {
+                        backgroundColor: '#404a59',
+                        title: {
+                            text: '易代储点亮中国',
+                            subtext: 'Welcome to Ydc',
+                            sublink: 'http://www.yidaichu.com',
+                            left: 'center',
+                            top: 'top',
+                            textStyle: {
+                                color: '#fff'
+                            }
+                        },
+                        tooltip: {},
+                        legend: {
+                            left: 'left',
+
+                            data: ['强', '中', '弱'],
+                            textStyle: {
+                                color: '#ccc'
+                            }
+                        },
+                        geo: {
+                            map: 'china',
+                            roam: true,
+                            label: {
+                                emphasis: {
+                                    show: false
+                                }
+                            },
+                            itemStyle: {
+                                normal: {
+                                    areaColor: '#323c48',
+                                    borderColor: '#111'
+                                },
+                                emphasis: {
+                                    areaColor: '#2a333d'
+                                }
+                            }
+                        },
+                        series: [{
+                            name: '弱',
+                            type: 'scatter',
+                            coordinateSystem: 'geo',
+                            symbolSize: 1,
+                            large: true,
+                            itemStyle: {
+                                normal: {
+                                    shadowBlur: 2,
+                                    shadowColor: 'rgba(37, 140, 249, 0.8)',
+                                    color: 'rgba(37, 140, 249, 0.8)'
+                                }
+                            },
+                            data: weiboDatas[z]
+                        }, {
+                            name: '中',
+                            type: 'scatter',
+                            coordinateSystem: 'geo',
+                            symbolSize: 1,
+                            large: true,
+                            itemStyle: {
+                                normal: {
+                                    shadowBlur: 2,
+                                    shadowColor: 'rgba(14, 241, 242, 0.8)',
+                                    color: 'rgba(14, 241, 242, 0.8)'
+                                }
+                            },
+                            data: ""
+                        }, {
+                            name: '强',
+                            type: 'scatter',
+                            coordinateSystem: 'geo',
+                            symbolSize: 1,
+                            large: true,
+                            itemStyle: {
+                                normal: {
+                                    shadowBlur: 2,
+                                    shadowColor: 'rgba(255, 255, 255, 0.8)',
+                                    color: 'rgba(255, 255, 255, 0.8)'
+                                }
+                            },
+                            data: ""
+                        }]
+                    });
+                    z++
+                }
+            }, 200)
+        });
+        if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+        }
+    </script>
+</body>
+
+</html>
